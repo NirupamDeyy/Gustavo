@@ -18,12 +18,15 @@ public class BoxController : MonoBehaviour
         cubeArray = new Transform[width, height];
         InitiateArray();
         ManupulateColors();
-       
+
     }
     private void FixedUpdate()
     {
-
+    
         ManipulateCubeHeights();
+        offsetX = offsetX - 0.001f;
+        offsetY = offsetY - 0.0001f;
+
     }
     void InitiateArray()
     {
@@ -79,9 +82,11 @@ public class BoxController : MonoBehaviour
                 float cordx = CalculateHeightofCube(x, y)  * scale* 20;
                 Renderer renderer = cubeArray[x,y].GetComponent<Renderer>();
                 Material mat = renderer.material;
-                // Debug.Log("x is:" + x + "y is: " + y + "z is: " + cordx);
-                float r = Random.Range(0f, .1f);
-                mat.color = new Color(cordx * r, x / cordx,y / cordx);
+                float r = Random.Range(3f, 10f);
+                mat.color = new Color(10/cordx, y / cordx, x / cordx);  // R G B cordx * r, y / cordx,x / cordx
+
+                //Debug.Log("x is:" + r*cordx * r + " y is: " + y / cordx + " z is: " + x / cordx);
+
 
 
             }
