@@ -5,8 +5,8 @@ using UnityEngine;
 
 public class CreatePrint : MonoBehaviour
 {
-    public Transform cubePrefab;
-    public Transform mainCube;
+    public Transform[] cubePrefab;
+   
 
     public int width = 8;
     public int height = 8;
@@ -28,16 +28,18 @@ public class CreatePrint : MonoBehaviour
     public float circleRadius = 3.5f; // Adjust circle radius as needed
     public Transform colliderObject;
 
+    public UIcontrolScript uIcontrolScript;
+
+    bool canInitiate;
     void Start()
     {
         cubeArray = new Transform[width, height];
+        canInitiate = true;
         InitiateArray();
-
-        ManupulateColors();
-
-
+        //ManupulateColors();
     }
-    private void Update()
+
+    private void FixedUpdate()
     {
 
         ManipulateCubeHeights();
@@ -45,22 +47,42 @@ public class CreatePrint : MonoBehaviour
         offsetY = offsetY - 0.0001f;
 */
     }
-    void InitiateArray()
+    public void DestroyArray()
     {
-        for (int x = 0; x < width; x++)
+        if (canInitiate)
         {
-            for (int y = 0; y < height; y++)
+            for (int x = 0; x < width; x++)
             {
-                float cordx = CalculateHeightofCube(x, y);
-                float r = Random.Range(0f, 10f);
-                Vector3 pos = new Vector3(x, r * cordx, y);
-                Transform newCube = Instantiate(cubePrefab, pos, Quaternion.identity);
+                for (int y = 0; y < height; y++)
+                {
+                    Destroy(cubeArray[x, y].gameObject);
 
-
-                cubeArray[x, y] = newCube; // Store the reference to the instantiated cube
-
+                }
             }
         }
+    }
+    public void InitiateArray()
+    {
+        if(canInitiate) 
+        {
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    
+
+                    float cordx = CalculateHeightofCube(x, y);
+                    float r = Random.Range(0f, 10f);
+                    Vector3 pos = new Vector3(x, r * cordx, y);
+                    Transform newCube = Instantiate(cubePrefab[uIcontrolScript.selectedPrefabNumber], pos, Quaternion.identity);
+
+
+                    cubeArray[x, y] = newCube; // Store the reference to the instantiated cube
+
+                }
+            }
+        }
+        
     }
 
     float CalculateHeightofCube(int x, int y)
@@ -84,7 +106,7 @@ public class CreatePrint : MonoBehaviour
                 if (cubeArray[x,y].tag == "cellsMoving")
                 {
                     Vector3 newPosition = cubeArray[x, y].position;
-                    newPosition.y -= 0.1f;
+                    newPosition.y -= 0.5f;
                   
                     
                     cubeArray[x, y].position = newPosition;
@@ -105,30 +127,27 @@ public class CreatePrint : MonoBehaviour
         }
     }
 
-    public void OnTriggerEnter(Collider other)
+   /* public void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.CompareTag("cells"))
         {
-            Debug.Log(other.transform);
             other.tag = "cellsMoving";
         }
-    }
+    }*/
 
     public void OnTriggerExit(Collider other)
     {
         if (other.gameObject.CompareTag("cellsMoving"))
         {
-            Debug.Log("loda");
             other.tag = "cellsStopMoving";
         }
     }
 
     public void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.CompareTag("cellsStopMoving"))
+        if (other.gameObject.CompareTag("cells") || other.CompareTag("cellsStopMoving"))
         {
-            Debug.Log("loda");
-            other.tag = "cellsMoving";
+         other.tag = "cellsMoving";
         }
     }
     void ManupulateColors()
