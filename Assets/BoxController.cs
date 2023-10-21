@@ -83,7 +83,7 @@ public class BoxController : MonoBehaviour
                 Renderer renderer = cubeArray[x,y].GetComponent<Renderer>();
                 Material mat = renderer.material;
                 float r = Random.Range(3f, 10f);
-                mat.color = new Color(10/cordx, y / cordx, x / cordx);  // R G B cordx * r, y / cordx,x / cordx
+                mat.color = new Color(10, y / cordx, x / cordx);  // R G B cordx * r, y / cordx,x / cordx
 
                 //Debug.Log("x is:" + r*cordx * r + " y is: " + y / cordx + " z is: " + x / cordx);
 

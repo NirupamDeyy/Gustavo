@@ -10,6 +10,8 @@ public class CreatePrint : MonoBehaviour
 
     public int width = 8;
     public int height = 8;
+
+  
     public float scale = 2;
     public float offsetX = 100f;
     public float offsetY = 100f;
@@ -24,6 +26,13 @@ public class CreatePrint : MonoBehaviour
     [Range(0, 20)]
     public int depthRange;
 
+    [Range(0,100)]
+    public int colorConstant =34;
+    [Range(0, 100)]
+    public int colorConstanty = 2;
+    [Range(0, 100)]
+    public int colorConstantx = 2;
+
     public int gridSize = 10; // Adjust grid size as needed
     public float circleRadius = 3.5f; // Adjust circle radius as needed
     public Transform colliderObject;
@@ -31,24 +40,35 @@ public class CreatePrint : MonoBehaviour
     public UIcontrolScript uIcontrolScript;
 
     bool canInitiate;
+    public bool arraylimitCrossed =false;
+
     void Start()
     {
         cubeArray = new Transform[width, height];
         canInitiate = true;
+        width = 50;
+        height = 50;
         InitiateArray();
-        //ManupulateColors();
+       
+      
     }
 
     private void FixedUpdate()
     {
-
         ManipulateCubeHeights();
+
+        if (width <= 50 && height <= 50) 
+        {
+            //ManipulateCubeHeights();
+        }
+       
         /*offsetX = offsetX - 0.001f;
         offsetY = offsetY - 0.0001f;
 */
     }
     public void DestroyArray()
     {
+        
         if (canInitiate)
         {
             for (int x = 0; x < width; x++)
@@ -81,12 +101,19 @@ public class CreatePrint : MonoBehaviour
 
                 }
             }
+            if (width + height <= 100)
+            {
+                ManupulateColors();
+            }
+            ManipulateCubeHeights();
+            
         }
         
     }
 
     float CalculateHeightofCube(int x, int y)
     {
+        
         float xCord = (float)x / width * scale + offsetX;
         float yCord = (float)y / height * scale + offsetY;
         float sample = Mathf.PerlinNoise(xCord, yCord);
@@ -94,8 +121,9 @@ public class CreatePrint : MonoBehaviour
     }
 
     // Example function to manipulate the heights of the cubes
-    void ManipulateCubeHeights()
+    public void ManipulateCubeHeights()
     {
+        
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -150,17 +178,17 @@ public class CreatePrint : MonoBehaviour
          other.tag = "cellsMoving";
         }
     }
-    void ManupulateColors()
+    public void ManupulateColors()
     {
         for (int x = 0; x < width; x++)
         {
-            for (int y = 0; y < height; y++)
+            for (int y = 0; y < height; y++) 
             {
                 float cordx = CalculateHeightofCube(x, y) * scale * 20;
                 Renderer renderer = cubeArray[x, y].GetComponent<Renderer>();
                 Material mat = renderer.material;
                 float r = Random.Range(3f, 10f);
-                mat.color = new Color(10 / cordx, y / cordx, x / cordx);  // R G B cordx * r, y / cordx,x / cordx
+                mat.color = new Color(colorConstant/ cordx, 0.1f * colorConstanty *y / cordx, 0.2f * colorConstantx * x / cordx);  // R G B cordx * r, y / cordx,x / cordx
 
                 //Debug.Log("x is:" + r*cordx * r + " y is: " + y / cordx + " z is: " + x / cordx);
 
