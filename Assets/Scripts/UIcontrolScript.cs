@@ -26,11 +26,23 @@ public class UIcontrolScript : MonoBehaviour
     public Slider OffsetX;
     public Slider OffsetY;
 
+    public Button menuButon;
+    public Image expand;
+    public Image collapse;
+
+    public Button quit;
+
     public CreatePrint createPrint;
+    public BallMovementScript ballMovementScript;
+    public CinemachineSwitch cinemachineSwitch;
+
     // Start is called before the first frame update
     void Start()
     {
+      
+
         pauseMenu.gameObject.SetActive(true);
+        pauseMenuOn = true;
         List<string> options = new List<string> { "Cube", "Cylinder", "Sphere" };
         selectPrefabDropDown.AddOptions(options);
         selectPrefabDropDown.onValueChanged.AddListener(OnDropdownValueChanged);
@@ -46,6 +58,9 @@ public class UIcontrolScript : MonoBehaviour
 
         OffsetX.onValueChanged.AddListener(OnOffsetXChanged);
         OffsetY.onValueChanged.AddListener(OnOffsetYChanged);
+
+        menuButon.onClick.AddListener(menuButtonFunc);
+        quit.onClick.AddListener(QuitApplication);
     }
 
     // Update is called once per frame
@@ -53,22 +68,38 @@ public class UIcontrolScript : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.Escape))
         {
-            if(!pauseMenuOn)
-            {
-                pauseMenu.gameObject.SetActive(true);
-                pauseMenuOn = true;
-                Cursor.lockState = CursorLockMode.None;
-                Cursor.visible = true;
-            }
-            else if(pauseMenuOn)
-            {
-                pauseMenu.gameObject.SetActive(false);
-                pauseMenuOn = false;
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                
-            }
+            menuButtonFunc();
         }
+    }
+
+    private void menuButtonFunc()
+    {
+        cinemachineSwitch.SwitchPriority();
+        if (!pauseMenuOn)
+        {
+            
+            pauseMenu.gameObject.SetActive(true);
+            pauseMenuOn = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+            expand.gameObject.SetActive(true);
+            collapse.gameObject.SetActive(false);
+        }
+        else if (pauseMenuOn)
+        {
+            
+            pauseMenu.gameObject.SetActive(false);
+            pauseMenuOn = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+            expand.gameObject.SetActive(false);
+            collapse.gameObject.SetActive(true);
+        }
+    }
+
+    public void QuitApplication()
+    {
+        Application.Quit();
     }
 
     void OnDropdownValueChanged(int index)
@@ -104,6 +135,7 @@ public class UIcontrolScript : MonoBehaviour
         createPrint.DestroyArray();
         createPrint.width = (int)index;
         createPrint.InitiateArray();
+        //createPrint.ManupulateColors();
     }
 
     void OnSizeYChanged(float index)
@@ -113,24 +145,28 @@ public class UIcontrolScript : MonoBehaviour
 
         createPrint.height = (int)index;
         createPrint.InitiateArray();
+        //createPrint.ManupulateColors();
     }
 
     void OnScaleChanged(float index)
     {
 
         createPrint.scale = index;
+        createPrint.ManupulateColors();
     }
 
     void OnOffsetXChanged(float index)
     {
 
         createPrint.offsetX = index;
+        createPrint.ManupulateColors();
     }
 
     void OnOffsetYChanged(float index)
     {
 
         createPrint.offsetY = index;
+        createPrint.ManupulateColors();
     }
 
 

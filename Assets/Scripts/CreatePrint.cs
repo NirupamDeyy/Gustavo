@@ -2,9 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class CreatePrint : MonoBehaviour
 {
+
+    public TMP_Text infoText;
     public Transform[] cubePrefab;
    
 
@@ -13,8 +16,8 @@ public class CreatePrint : MonoBehaviour
 
   
     public float scale = 2;
-    public float offsetX = 100f;
-    public float offsetY = 100f;
+    public float offsetX = 0f;
+    public float offsetY = 0f;
 
     private Transform[,] cubeArray; // 2D array to store references to the cubes
     private int[,] miniCubeArray;
@@ -49,8 +52,9 @@ public class CreatePrint : MonoBehaviour
         width = 50;
         height = 50;
         InitiateArray();
-       
-      
+        infoText.text = "W A S D for movement";
+
+
     }
 
     private void FixedUpdate()
@@ -103,7 +107,12 @@ public class CreatePrint : MonoBehaviour
             }
             if (width + height <= 100)
             {
+                infoText.text = "";
                 ManupulateColors();
+            }
+            else if(width + height > 100)
+            {
+                infoText.text = "More than 2500 cells. Colours are disabled for faster processing.";
             }
             ManipulateCubeHeights();
             
@@ -114,8 +123,8 @@ public class CreatePrint : MonoBehaviour
     float CalculateHeightofCube(int x, int y)
     {
         
-        float xCord = (float)x / width * scale + offsetX;
-        float yCord = (float)y / height * scale + offsetY;
+        float xCord = (float)x / width * scale + offsetX/100;
+        float yCord = (float)y / height * scale + offsetY/100;
         float sample = Mathf.PerlinNoise(xCord, yCord);
         return sample;
     }
